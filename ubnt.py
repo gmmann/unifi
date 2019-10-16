@@ -15,19 +15,8 @@ with open(site_file, 'r') as site_list:
         user_name = site_list_row[1]
         site_name = site_list_row[2]
 
-# print(read_controller_creds)
-
-#For now just change the values here for your controller, username and site name
-# controller_host = '192.168.69.9'
-# user_name = 'george.m.mann@gmail.com'
-# site_name = '35 Thomas Farm circle'
-
-
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-# set up connection parameters in a dictionary
-# controller_host = input('What is the ip address of the controller? : ')
-# controller_host = '192.168.69.9'
 controller = {"ip": controller_host, "port": "8443"}
 
 # set REST API headers
@@ -36,20 +25,9 @@ headers = {"Accept": "application/json",
 # set URL parameters
 loginUrl = 'api/login'
 url = f"https://{controller['ip']}:{controller['port']}/{loginUrl}"
-# set username and password
-# user_name = input('What is the username?                     : ')
-# pass_word = input('What is the password?                     : ')
-# site_name = input('What is the site name?                    : ')
-
-# user_name = 'george.m.mann@gmail.com'
-# pass_word = input('What is the password?                     : ')
+# get password
 pass_word = getpass('What is the password?                     : ')
-# site_name = '35 Thomas Farm circle'
 
-# print(user_name)
-# print(pass_word)
-# print(controller_host)
-# print(url)
 body = {
     "username": user_name,
     "password": pass_word
@@ -74,17 +52,14 @@ response = session.get(url, headers=headers,
                        verify=False)
 api_data = response.json()
 # print("/" * 50)
-# pprint(api_data)
 # print("/" * 50)
 
-# Parse out the resulting list of
+# Parse out the resulting list of info
 responseList = api_data['data']
-# pprint(responseList)
 n = 'name'
 for items in responseList:
     if items.get('desc') == site_name:
         n = items.get('name')
-# print(n)
 
 getDevicesUrl = f"api/s/{n}/stat/device"
 url = f"https://{controller['ip']}:{controller['port']}/{getDevicesUrl}"
@@ -92,7 +67,6 @@ response = session.get(url, headers=headers,
                        verify=False)
 api_data = response.json()
 responseList = api_data['data']
-# pprint(responseList)
 print('DEVICE LIST AND STATUS')
 for device in responseList:
     print(f"The device {device['name']} has IP {device['ip']}")
@@ -104,3 +78,7 @@ for device in responseList:
         print('State:          offline')
     print(f"Upgradable?     {device['upgradable']}")
     print(' ')
+
+
+
+print(api_data)
