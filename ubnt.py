@@ -2,9 +2,25 @@ import requests
 import json
 from pprint import pprint
 import urllib3
+from getpass import getpass
+import csv
+
+
+read_controller_creds = csv.reader('sites.csv')
+print(read_controller_creds)
+
+#For now just change the values here for your controller, username and site name
+gate_way = '192.168.69.9'
+user_name = 'george.m.mann@gmail.com'
+site_name = '35 Thomas Farm circle'
+
+
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # set up connection parameters in a dictionary
-gateway = {"ip": "IP OR FQDN", "port": "8443"}
+# gate_way = input('What is the ip address of the controller? : ')
+# gate_way = '192.168.69.9'
+gateway = {"ip": gate_way, "port": "8443"}
 
 # set REST API headers
 headers = {"Accept": "application/json",
@@ -13,9 +29,22 @@ headers = {"Accept": "application/json",
 loginUrl = 'api/login'
 url = f"https://{gateway['ip']}:{gateway['port']}/{loginUrl}"
 # set username and password
+# user_name = input('What is the username?                     : ')
+# pass_word = input('What is the password?                     : ')
+# site_name = input('What is the site name?                    : ')
+
+# user_name = 'george.m.mann@gmail.com'
+# pass_word = input('What is the password?                     : ')
+pass_word = getpass('What is the password?                     : ')
+# site_name = '35 Thomas Farm circle'
+
+# print(user_name)
+# print(pass_word)
+# print(gate_way)
+# print(url)
 body = {
-    "username": "USER",
-    "password": "PASSWORD"
+    "username": user_name,
+    "password": pass_word
 }
 # Open a session for capturing cookies
 session = requests.Session()
@@ -45,7 +74,7 @@ responseList = api_data['data']
 # pprint(responseList)
 n = 'name'
 for items in responseList:
-    if items.get('desc') == 'Knox-Home':
+    if items.get('desc') == site_name:
         n = items.get('name')
 # print(n)
 
@@ -55,6 +84,7 @@ response = session.get(url, headers=headers,
                        verify=False)
 api_data = response.json()
 responseList = api_data['data']
+# pprint(responseList)
 print('DEVICE LIST AND STATUS')
 for device in responseList:
     print(f"The device {device['name']} has IP {device['ip']}")
