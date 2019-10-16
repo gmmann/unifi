@@ -5,29 +5,37 @@ import urllib3
 from getpass import getpass
 import csv
 
+site_file = './sites.csv'
 
-read_controller_creds = csv.reader('sites.csv')
-print(read_controller_creds)
+with open(site_file, 'r') as site_list:
+    site_list_read = csv.reader(site_list, delimiter=',')
+    site_list.readline()
+    for site_list_row in site_list_read:
+        controller_host = site_list_row[0]
+        user_name = site_list_row[1]
+        site_name = site_list_row[2]
+
+# print(read_controller_creds)
 
 #For now just change the values here for your controller, username and site name
-gate_way = '192.168.69.9'
-user_name = 'george.m.mann@gmail.com'
-site_name = '35 Thomas Farm circle'
+# controller_host = '192.168.69.9'
+# user_name = 'george.m.mann@gmail.com'
+# site_name = '35 Thomas Farm circle'
 
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # set up connection parameters in a dictionary
-# gate_way = input('What is the ip address of the controller? : ')
-# gate_way = '192.168.69.9'
-gateway = {"ip": gate_way, "port": "8443"}
+# controller_host = input('What is the ip address of the controller? : ')
+# controller_host = '192.168.69.9'
+controller = {"ip": controller_host, "port": "8443"}
 
 # set REST API headers
 headers = {"Accept": "application/json",
            "Content-Type": "application/json"}
 # set URL parameters
 loginUrl = 'api/login'
-url = f"https://{gateway['ip']}:{gateway['port']}/{loginUrl}"
+url = f"https://{controller['ip']}:{controller['port']}/{loginUrl}"
 # set username and password
 # user_name = input('What is the username?                     : ')
 # pass_word = input('What is the password?                     : ')
@@ -40,7 +48,7 @@ pass_word = getpass('What is the password?                     : ')
 
 # print(user_name)
 # print(pass_word)
-# print(gate_way)
+# print(controller_host)
 # print(url)
 body = {
     "username": user_name,
@@ -61,7 +69,7 @@ api_data = response.json()
 
 # Set up to get site name
 getSitesUrl = 'api/self/sites'
-url = f"https://{gateway['ip']}:{gateway['port']}/{getSitesUrl}"
+url = f"https://{controller['ip']}:{controller['port']}/{getSitesUrl}"
 response = session.get(url, headers=headers,
                        verify=False)
 api_data = response.json()
@@ -79,7 +87,7 @@ for items in responseList:
 # print(n)
 
 getDevicesUrl = f"api/s/{n}/stat/device"
-url = f"https://{gateway['ip']}:{gateway['port']}/{getDevicesUrl}"
+url = f"https://{controller['ip']}:{controller['port']}/{getDevicesUrl}"
 response = session.get(url, headers=headers,
                        verify=False)
 api_data = response.json()
