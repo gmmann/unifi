@@ -2,3 +2,6 @@
 keys
 site_report.txt
 api_data.txt
+client_status_report.txt
+device_status_report.txt
+client_data

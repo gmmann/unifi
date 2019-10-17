@@ -56,6 +56,8 @@ api_data = response.json()
 
 # Parse out the resulting list of info
 responseList = api_data['data']
+# site_parse = responseList['data'][]
+# print(responseList{'desc'})
 n = 'name'
 for items in responseList:
     if items.get('desc') == site_name:
@@ -67,18 +69,88 @@ response = session.get(url, headers=headers,
                        verify=False)
 api_data = response.json()
 responseList = api_data['data']
+device_output_file = './device_status_report.txt'
+
+write_config_file = open(device_output_file,'a+')
 print('DEVICE LIST AND STATUS')
+write_config_file.writelines('DEVICE LIST AND STATUS \n')
+print(site_name)
+write_config_file.writelines(f"{site_name} \n")
+
 for device in responseList:
+    # write_config_file = open(device_output_file,'a+')
     print(f"The device {device['name']} has IP {device['ip']}")
     print(f"MAC:            {device['mac']}")
     print(f"DHCP?:          {device['config_network']['type']}")
+    write_config_file.writelines(f"The device {device['name']} has IP {device['ip']} \n")
+    write_config_file.writelines(f"MAC:            {device['mac']} \n")
+    write_config_file.writelines(f"DHCP?:          {device['config_network']['type']} \n")
     if device['state'] == 1:
         print('State:          online')
+        write_config_file.writelines('State:          online \n')
     else:
-        print('State:          offline')
+        print('State:          offline \n')
+        write_config_file.writelines('State:          offline \n')
     print(f"Upgradable?     {device['upgradable']}")
     print(' ')
+    write_config_file.writelines(f"Upgradable?     {device['upgradable']} \n")
+    write_config_file.writelines(' ')
+
+
+print()
+print()
+print()
+print()
+print('========================================================================================')
+print('========================================================================================')
+print('========================================================================================')
+print('========================================================================================')
+print('========================================================================================')
+print()
+print()
+print()
+print()
+
+
+# print(api_data)
+
+
+getClientsUrl = f"api/s/{n}/stat/sta"
+url = f"https://{controller['ip']}:{controller['port']}/{getClientsUrl}"
+response = session.get(url, headers=headers,
+                       verify=False)
+api_data = response.json()
+responseList = api_data['data']
+print('CLIENT LIST AND STATUS')
+# print(api_data)
+
+client_output_file = './client_status_report.txt'
+for client in responseList:
+    write_config_file = open(client_output_file,'a+')
+    wired_wireless = {client['is_wired']}
+    # print(wired_wireless)
+    if True in wired_wireless:
+        conn_type = 'Wired'
+        # print(f"{client['name']} client MAC Address of {client['mac']} is {conn_type} ")
+    else:
+        conn_type = 'Wireless'
+    print(f"{client['name']} client MAC Address of {client['mac']} is {conn_type} ")
+    write_config_file.writelines(f"{client['name']} client MAC Address of {client['mac']} is {conn_type} \n")
+
+    # print(f"The client {client['name']} has IP {client['ip']} and MAC Address of {client['mac']} ")
+    # print(f"MAC:            " )
+    # print(f"DHCP?:          {client['config_network']['type']}")
+    # if client['state'] == 1:
+    #     print('State:          online')
+    # else:
+    #     print('State:          offline')
+    # print(f"Upgradable?     {device['upgradable']}")
+    # print(' ')
+print('========================================================================================')
+print('========================================================================================')
+print('========================================================================================')
+print('========================================================================================')
+print('========================================================================================')
 
 
 
-print(api_data)
