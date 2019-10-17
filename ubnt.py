@@ -77,6 +77,11 @@ write_config_file.writelines('DEVICE LIST AND STATUS \n')
 print(site_name)
 write_config_file.writelines(f"{site_name} \n")
 
+
+#grouping
+
+
+
 for device in responseList:
     # write_config_file = open(device_output_file,'a+')
     print(f"The device {device['name']} has IP {device['ip']}")
